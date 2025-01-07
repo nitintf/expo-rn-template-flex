@@ -2,6 +2,10 @@ export interface ConfigBaseProps {
   persistNavigation: "always" | "dev" | "prod" | "never"
   catchErrors: "always" | "dev" | "prod" | "never"
   exitRoutes: string[]
+
+  // Supabase
+  supabaseUrl: string
+  supabaseAnonKey: string
 }
 
 export type PersistNavigationConfig = ConfigBaseProps["persistNavigation"]
@@ -21,6 +25,18 @@ const BaseConfig: ConfigBaseProps = {
    * is pressed while in that screen. Only affects Android.
    */
   exitRoutes: ["Welcome"],
+
+  /**
+   * This is the URL to the Supabase API. It should be the same in both
+   * development and production.
+   */
+  supabaseUrl: "https://<your-supabase-url>.supabase.co",
+
+  /**
+   * This is the anonymous key to the Supabase API. It should be the same in both
+   * development and production.
+   */
+  supabaseAnonKey: "<your-supabase-anon-key>",
 }
 
 export default BaseConfig

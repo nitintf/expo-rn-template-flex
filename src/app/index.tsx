@@ -1,15 +1,16 @@
-import { observer } from "mobx-react-lite"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
-import { Screen, Text } from "@/components"
-import { isRTL } from "@/i18n"
-import { ThemedStyle } from "@/theme"
-import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
-import { useAppTheme } from "@/utils/useAppTheme"
+
+import { Screen } from "@/components/common/screen"
+import { Text } from "@/components/ui"
+import { useAppTheme } from "@/hooks/use-app-theme"
+import { useSafeAreaInsetsStyle } from "@/hooks/use-safe-area-insets-style"
+import { isRTL } from "@/lib/i18n"
+import { ThemedStyle } from "@/lib/theme"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
 
-export default observer(function WelcomeScreen() {
+export default function WelcomeScreen() {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
   const { theme, themed } = useAppTheme()
 
@@ -37,7 +38,7 @@ export default observer(function WelcomeScreen() {
       </View>
     </Screen>
   )
-})
+}
 
 const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,

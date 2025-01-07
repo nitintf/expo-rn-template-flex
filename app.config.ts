@@ -1,4 +1,4 @@
-import { ExpoConfig, ConfigContext } from "@expo/config"
+import { ConfigContext, ExpoConfig } from "@expo/config"
 
 /**
  * Use ts-node here so we can use TypeScript for our Config Plugins
@@ -17,6 +17,6 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
 
   return {
     ...config,
-    plugins: [...existingPlugins, require("./plugins/withSplashScreen").withSplashScreen],
+    plugins: [...existingPlugins, require("./plugins/with-splash-screen").withSplashScreen],
   }
 }

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo '🛠️ Running type-check and lint-staged tasks...'
+
+bun type-check
+bun lint-staged

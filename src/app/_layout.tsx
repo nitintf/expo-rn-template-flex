@@ -1,61 +1,59 @@
-import { useEffect, useState } from "react"
-import { Slot, SplashScreen } from "expo-router"
+import { useEffect } from "react"
+
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
+import { Slot } from "expo-router"
+import * as SplashScreen from "expo-splash-screen"
+import { ViewStyle } from "react-native"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 
-import { useInitialRootStore } from "@/models"
-import { useFonts } from "@expo-google-fonts/space-grotesk"
-import { customFontsToLoad } from "@/theme"
-import { initI18n } from "@/i18n"
-import { loadDateFnsLocale } from "@/utils/formatDate"
-import { useThemeProvider } from "@/utils/useAppTheme"
+import { useThemeProvider } from "@/hooks/use-app-theme"
+import { useInitialLoad } from "@/hooks/use-initial-load"
 
 SplashScreen.preventAutoHideAsync()
+
+// Set the animation options. This is optional.
+SplashScreen.setOptions({
+  duration: 500,
+  fade: true,
+})
 
 if (__DEV__) {
   // Load Reactotron configuration in development. We don't want to
   // include this in our production bundle, so we are using `if (__DEV__)`
   // to only execute this in development.
-  require("src/devtools/ReactotronConfig.ts")
+  require("src/devtools/reactotron-config.ts")
 }
 
-export { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary"
+export { Index } from "@/components/common/error-boundary"
 
 export default function Root() {
-  // Wait for stores to load and render our layout inside of it so we have access
-  // to auth info etc
-  const { rehydrated } = useInitialRootStore()
-
-  const [fontsLoaded, fontError] = useFonts(customFontsToLoad)
-  const [isI18nInitialized, setIsI18nInitialized] = useState(false)
+  const { isLoaded } = useInitialLoad()
   const { themeScheme, setThemeContextOverride, ThemeProvider } = useThemeProvider()
 
   useEffect(() => {
-    initI18n()
-      .then(() => setIsI18nInitialized(true))
-      .then(() => loadDateFnsLocale())
-  }, [])
-
-  const loaded = fontsLoaded && isI18nInitialized && rehydrated
-
-  useEffect(() => {
-    if (fontError) throw fontError
-  }, [fontError])
-
-  useEffect(() => {
-    if (loaded) {
+    if (isLoaded) {
       SplashScreen.hideAsync()
     }
-  }, [loaded])
+  }, [isLoaded])
 
-  if (!loaded) {
+  if (!isLoaded) {
     return null
   }
 
   return (
-    <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
-      <KeyboardProvider>
-        <Slot />
-      </KeyboardProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={$containerStyles}>
+      <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
+        <KeyboardProvider>
+          <BottomSheetModalProvider>
+            <Slot />
+          </BottomSheetModalProvider>
+        </KeyboardProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   )
+}
+
+const $containerStyles: ViewStyle = {
+  flex: 1,
 }

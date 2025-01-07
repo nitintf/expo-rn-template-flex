@@ -1,6 +1,7 @@
 // we always make sure 'react-native' gets included first
 import * as ReactNative from "react-native"
-import mockFile from "./mockFile"
+
+import mockFile from "./mock-file"
 
 // libraries to mock
 jest.doMock("react-native", () => {
@@ -49,6 +50,7 @@ jest.mock("../src/i18n/i18n.ts", () => ({
   },
 }))
 
+// @ts-ignore
 declare const tron // eslint-disable-line @typescript-eslint/no-unused-vars
 
 declare global {

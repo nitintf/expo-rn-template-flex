@@ -11,9 +11,51 @@ module.exports = {
     "plugin:react/jsx-runtime",
     "prettier",
   ],
-  plugins: ["reactotron", "prettier"],
+  plugins: ["reactotron", "prettier", "import", "unicorn"],
   rules: {
     "prettier/prettier": "error",
+    // Add import rules
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling"],
+          "index",
+          "object",
+          "type",
+        ],
+        "pathGroups": [
+          {
+            pattern: "react",
+            group: "external",
+            position: "before",
+          },
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          order: "asc",
+          caseInsensitive: true,
+        },
+      },
+    ],
+    "unicorn/filename-case": [
+      "error",
+      {
+        case: "kebabCase",
+        ignore: [
+          // Expo Router patterns
+          "^\\+.*\\.tsx?$",
+          "^_.*\\.tsx?$",
+          "^index\\.tsx?$",
+        ],
+      },
+    ],
+    // Prevent duplicate imports
+    "import/no-duplicates": "error",
     // typescript-eslint
     "@typescript-eslint/array-type": 0,
     "@typescript-eslint/ban-ts-comment": 0,
