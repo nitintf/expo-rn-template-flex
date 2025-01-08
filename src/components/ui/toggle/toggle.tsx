@@ -58,7 +58,7 @@ export interface ToggleProps<T> extends Omit<TouchableOpacityProps, "style"> {
   inputInnerStyle?: ViewStyle
   /**
    * Optional detail style override.
-   * This can be ViewStyle for Switch/Radio or ImageStyle for Checkbox
+   * See Checkbox, Radio, and Switch for more details
    */
   inputDetailStyle?: ViewStyle | ImageStyle
   /**

@@ -7,29 +7,22 @@ import { ViewStyle } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 
-import { useThemeProvider } from "@/hooks/use-app-theme"
 import { useInitialLoad } from "@/hooks/use-initial-load"
+import { ThemeProvider } from "@/lib/theme"
 
 SplashScreen.preventAutoHideAsync()
-
-// Set the animation options. This is optional.
-SplashScreen.setOptions({
-  duration: 500,
-  fade: true,
-})
 
 if (__DEV__) {
   // Load Reactotron configuration in development. We don't want to
   // include this in our production bundle, so we are using `if (__DEV__)`
   // to only execute this in development.
-  require("src/devtools/reactotron-config.ts")
+  require("src/lib/devtools/reactotron-config.ts")
 }
 
 export { Index } from "@/components/common/error-boundary"
 
-export default function Root() {
+export default function RootLayout() {
   const { isLoaded } = useInitialLoad()
-  const { themeScheme, setThemeContextOverride, ThemeProvider } = useThemeProvider()
 
   useEffect(() => {
     if (isLoaded) {
@@ -43,7 +36,7 @@ export default function Root() {
 
   return (
     <GestureHandlerRootView style={$containerStyles}>
-      <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
+      <ThemeProvider>
         <KeyboardProvider>
           <BottomSheetModalProvider>
             <Slot />

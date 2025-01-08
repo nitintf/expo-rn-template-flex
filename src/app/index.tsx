@@ -2,6 +2,7 @@ import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 
 import { Screen } from "@/components/common/screen"
 import { Text } from "@/components/ui"
+import { Config } from "@/config"
 import { useAppTheme } from "@/hooks/use-app-theme"
 import { useSafeAreaInsetsStyle } from "@/hooks/use-safe-area-insets-style"
 import { isRTL } from "@/lib/i18n"
@@ -24,7 +25,7 @@ export default function WelcomeScreen() {
           tx="welcomeScreen:readyForLaunch"
           preset="heading"
         />
-        <Text tx="welcomeScreen:exciting" preset="subheading" />
+        <Text text={Config.VERSION} preset="subheading" />
         <Image
           style={$welcomeFace}
           source={welcomeFace}

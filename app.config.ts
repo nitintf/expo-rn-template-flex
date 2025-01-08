@@ -6,17 +6,70 @@ import { ConfigContext, ExpoConfig } from "@expo/config"
  */
 require("ts-node/register")
 
+const { Env, ClientEnv } = require("./env")
+
 /**
- * @param config ExpoConfig coming from the static config app.json if it exists
+ * @param config ExpoConfig coming from the static config old-app.json if it exists
  *
  * You can read more about Expo's Configuration Resolution Rules here:
  * https://docs.expo.dev/workflow/configuration/#configuration-resolution-rules
  */
 module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
-  const existingPlugins = config.plugins ?? []
-
   return {
     ...config,
-    plugins: [...existingPlugins, require("./plugins/with-splash-screen").withSplashScreen],
+    name: Env.NAME,
+    description: `${Env.NAME} Mobile App`,
+    scheme: Env.SCHEME,
+    slug: "repsyapp",
+    version: Env.VERSION.toString(),
+    orientation: "portrait",
+    icon: "./assets/icon.png",
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true,
+    updates: {
+      fallbackToCacheTimeout: 0,
+    },
+    assetBundlePatterns: ["**/*"],
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: Env.BUNDLE_ID,
+    },
+    android: {
+      icon: "./assets/images/app-icon-android-legacy.png",
+      package: Env.PACKAGE,
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/app-icon-android-adaptive-foreground.png",
+        backgroundImage: "./assets/images/app-icon-android-adaptive-background.png",
+      },
+    },
+    experiments: {
+      tsconfigPaths: true,
+      typedRoutes: true,
+    },
+    plugins: [
+      "expo-localization",
+      "expo-secure-store",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          image: "./assets/images/app-icon-android-adaptive-foreground.png",
+          imageWidth: 300,
+          resizeMode: "contain",
+          backgroundColor: "#191015",
+        },
+      ],
+      "expo-router",
+      require("./plugins/with-splash-screen").withSplashScreen,
+    ],
+    extra: {
+      ...ClientEnv,
+      router: {
+        origin: false,
+      },
+      eas: {
+        projectId: "f4e819b4-ee87-49e1-8286-5ea9ffac005c",
+      },
+    },
   }
 }

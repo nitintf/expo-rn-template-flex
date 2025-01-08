@@ -4,7 +4,7 @@
 # and navigate to the demo screen
 
 appId: com.repsy # the app id of the app we want to test
-# You can find the appId of an Ignite app in the `app.json` file
+# You can find the appId of an Ignite app in the `old-app.json` file
 # as the "package" under the "android" section and "bundleIdentifier" under the "ios" section
 ---
 - clearState # clears the state of our app (navigation and authentication)
