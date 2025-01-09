@@ -22,7 +22,7 @@ interface State {
  * @param {Props} props - The props for the `Button` component.
  * @returns {JSX.Element} The rendered `Button` component.
  */
-export class Index extends Component<Props, State> {
+export class ErrorBoundary extends Component<Props, State> {
   state = { error: null, errorInfo: null }
 
   // If an error in a child is encountered, this will run

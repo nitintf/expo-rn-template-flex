@@ -21,7 +21,7 @@ type Presets = "default" | "reversed"
 
 interface CardProps extends TouchableOpacityProps {
   /**
-   * One of the different types of text presets.
+   * One of the different @types of text presets.
    */
   preset?: Presets
   /**

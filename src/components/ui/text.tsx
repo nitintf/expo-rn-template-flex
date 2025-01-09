@@ -32,7 +32,7 @@ export interface TextProps extends RNTextProps {
    */
   style?: StyleProp<TextStyle>
   /**
-   * One of the different types of text presets.
+   * One of the different @types of text presets.
    */
   preset?: Presets
   /**

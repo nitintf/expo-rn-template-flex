@@ -10,7 +10,7 @@ import type { StyleProp } from "react-native"
 // This supports "light" and "dark" themes by default. If undefined, it'll use the system theme
 export type ThemeContexts = "light" | "dark" | undefined
 
-// Because we have two themes, we need to define the types for each of them.
+// Because we have two themes, we need to define the @types for each of them.
 // colorsLight and colorsDark should have the same keys, but different values.
 export type Colors = typeof colorsLight | typeof colorsDark
 // The light type needs to take into account the different light values for light and dark themes.

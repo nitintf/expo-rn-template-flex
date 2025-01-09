@@ -19,7 +19,7 @@ if (__DEV__) {
   require("src/lib/devtools/reactotron-config.ts")
 }
 
-export { Index } from "@/components/common/error-boundary"
+export { ErrorBoundary } from "@/components/common/error-boundary"
 
 export default function RootLayout() {
   const { isLoaded } = useInitialLoad()

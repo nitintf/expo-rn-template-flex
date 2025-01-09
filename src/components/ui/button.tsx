@@ -59,7 +59,7 @@ export interface ButtonProps extends PressableProps {
    */
   disabledTextStyle?: StyleProp<TextStyle>
   /**
-   * One of the different types of button presets.
+   * One of the different @types of button presets.
    */
   preset?: Presets
   /**

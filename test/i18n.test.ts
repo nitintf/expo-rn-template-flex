@@ -8,9 +8,11 @@ const EXCEPTIONS: string[] = [
   // "welcomeScreen:readyForLaunch",
 ]
 
+// @ts-ignore
 function iterate(obj, stack, array) {
   for (const property in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, property)) {
+      // @ts-ignore
       if (typeof (obj as object)[property] === "object") {
         iterate(obj[property], `${stack}.${property}`, array)
       } else {
@@ -51,7 +53,9 @@ describe("i18n", () => {
     exec(command, (_, stdout) => {
       const allTranslationsDefinedOld = iterate(en, "", [])
       // Replace first instance of "." because of i18next namespace separator
-      const allTranslationsDefined = allTranslationsDefinedOld.map((key) => key.replace(".", ":"))
+      const allTranslationsDefined = allTranslationsDefinedOld.map((key: string) =>
+        key.replace(".", ":"),
+      )
       const allTranslationsUsed = stdout.replace(/"/g, "").split("\n")
       allTranslationsUsed.splice(-1, 1)
 

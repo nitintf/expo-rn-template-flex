@@ -8,17 +8,15 @@ import {
 import * as SystemUI from "expo-system-ui"
 import { useColorScheme } from "react-native"
 
-import { type Theme, type ThemeContexts, lightTheme, darkTheme } from "@/lib/theme"
+import { darkTheme, lightTheme, type Theme, type ThemeContexts } from "@/lib/theme"
 
 interface ThemeContextType {
   themeScheme: ThemeContexts
   setThemeContextOverride: (newTheme: ThemeContexts) => void
 }
 
-// Create context with a meaningful default value
 export const ThemeContext = createContext<ThemeContextType | null>(null)
 
-// Memoized theme conversion function
 export const getThemeFromContext = (themeContext: ThemeContexts): Theme =>
   themeContext === "dark" ? darkTheme : lightTheme
 

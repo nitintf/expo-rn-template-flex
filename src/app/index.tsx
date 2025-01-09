@@ -8,8 +8,8 @@ import { useSafeAreaInsetsStyle } from "@/hooks/use-safe-area-insets-style"
 import { isRTL } from "@/lib/i18n"
 import { ThemedStyle } from "@/lib/theme"
 
-const welcomeLogo = require("../../assets/images/logo.png")
-const welcomeFace = require("../../assets/images/welcome-face.png")
+import welcomeLogo from "../../assets/images/logo.png"
+import welcomeFace from "../../assets/images/welcome-face.png"
 
 export default function WelcomeScreen() {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
