@@ -38,7 +38,7 @@ export const useAppTheme = (): UseAppThemeValue => {
   const theme = useMemo(() => getThemeFromContext(themeContext), [themeContext])
 
   const themed = useCallback(
-    <T,>(styleOrStyleFn: ThemedStyle<T> | StyleProp<T> | ThemedStyleArray<T>): T => {
+    <T>(styleOrStyleFn: ThemedStyle<T> | StyleProp<T> | ThemedStyleArray<T>): T => {
       const flatStyles = [styleOrStyleFn].flat(3)
       return Object.assign(
         {},

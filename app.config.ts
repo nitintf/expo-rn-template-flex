@@ -20,10 +20,10 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
     name: Env.NAME,
     description: `${Env.NAME} Mobile App`,
     scheme: Env.SCHEME,
-    slug: "repsyapp",
+    slug: "Repsy",
     version: Env.VERSION.toString(),
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/images/app-icon-all.png",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     updates: {
