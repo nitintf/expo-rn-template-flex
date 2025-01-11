@@ -1,6 +1,5 @@
 import { useEffect } from "react"
 
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { Slot } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { ViewStyle } from "react-native"
@@ -38,9 +37,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={$containerStyles}>
       <ThemeProvider>
         <KeyboardProvider>
-          <BottomSheetModalProvider>
-            <Slot />
-          </BottomSheetModalProvider>
+          {/* <BottomSheetModalProvider> */}
+          <Slot />
+          {/* </BottomSheetModalProvider> */}
         </KeyboardProvider>
       </ThemeProvider>
     </GestureHandlerRootView>

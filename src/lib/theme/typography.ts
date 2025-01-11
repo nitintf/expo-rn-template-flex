@@ -2,6 +2,13 @@
 // markdown file and add links from here
 
 import {
+  Kanit_300Light as kanitLight,
+  Kanit_400Regular as kanitRegular,
+  Kanit_500Medium as kanitMedium,
+  Kanit_600SemiBold as kanitSemiBold,
+  Kanit_700Bold as kanitBold,
+} from "@expo-google-fonts/kanit"
+import {
   SpaceGrotesk_300Light as spaceGroteskLight,
   SpaceGrotesk_400Regular as spaceGroteskRegular,
   SpaceGrotesk_500Medium as spaceGroteskMedium,
@@ -16,6 +23,11 @@ export const customFontsToLoad = {
   spaceGroteskMedium,
   spaceGroteskSemiBold,
   spaceGroteskBold,
+  kanitLight,
+  kanitRegular,
+  kanitMedium,
+  kanitSemiBold,
+  kanitBold,
 }
 
 const fonts = {
@@ -26,6 +38,14 @@ const fonts = {
     medium: "spaceGroteskMedium",
     semiBold: "spaceGroteskSemiBold",
     bold: "spaceGroteskBold",
+  },
+  kanit: {
+    // Cross-platform Google font.
+    light: "kanitLight",
+    normal: "kanitRegular",
+    medium: "kanitMedium",
+    semiBold: "kanitSemiBold",
+    bold: "kanitBold",
   },
   helveticaNeue: {
     // iOS only font.

@@ -33,6 +33,7 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
     ios: {
       supportsTablet: true,
       bundleIdentifier: Env.BUNDLE_ID,
+      usesAppleSignIn: true,
     },
     android: {
       icon: "./assets/images/app-icon-android-legacy.png",
@@ -49,6 +50,7 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
     plugins: [
       "expo-localization",
       "expo-secure-store",
+      "expo-apple-authentication",
       "expo-font",
       [
         "expo-splash-screen",

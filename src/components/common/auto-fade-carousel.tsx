@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
+import { Image } from "expo-image"
 import {
   Animated,
   Dimensions,
@@ -88,13 +89,26 @@ const AutoFadeCarousel = ({
   return (
     <View style={$containerStyles}>
       {/* Current Image */}
-      <Animated.Image
-        source={images1[currentIdx]}
-        style={[$imageStyles, { opacity: currentOpacity }]}
-      />
+      <Animated.View style={{ opacity: currentOpacity }}>
+        <Image
+          source={images1[currentIdx]}
+          style={$imageStyles}
+          cachePolicy={"memory"}
+          contentFit={"cover"}
+          priority={"high"}
+        />
+      </Animated.View>
 
       {/* Next Image */}
-      <Animated.Image source={images2[nextIdx]} style={[$imageStyles, { opacity: nextOpacity }]} />
+      <Animated.View style={{ opacity: nextOpacity }}>
+        <Image
+          source={images2[nextIdx]}
+          style={$imageStyles}
+          cachePolicy={"memory"}
+          contentFit={"cover"}
+          priority={"high"}
+        />
+      </Animated.View>
     </View>
   )
 }
@@ -106,7 +120,6 @@ const $containerStyles: ViewStyle = {
 
 const $imageStyles: ImageStyle = {
   height,
-  resizeMode: "cover",
   width,
   position: "absolute",
 }
