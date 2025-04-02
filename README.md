@@ -1,77 +1,124 @@
-# Welcome to your new ignited app!
+# Repsy
 
-> The latest and greatest boilerplate for Infinite Red opinions
+[![React Native](https://img.shields.io/badge/React%20Native-0.76.3-blue.svg)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/Expo-SDK%2050-black.svg)](https://expo.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
+[![ESLint](https://img.shields.io/badge/ESLint-8.x-4B32C3.svg)](https://eslint.org/)
+[![Jest](https://img.shields.io/badge/Jest-29.x-C21325.svg)](https://jestjs.io/)
 
-This is the boilerplate that [Infinite Red](https://infinite.red) uses as a way to test bleeding-edge changes to our React Native stack.
+A React Native application built with Expo and TypeScript.
 
-- [Quick start documentation](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/Boilerplate.md)
-- [Full documentation](https://github.com/infinitered/ignite/blob/master/docs/README.md)
+## 🚀 Tech Stack
 
-## Getting Started
+- [React Native](https://reactnative.dev/) - A framework for building native apps using React
+- [Expo](https://expo.dev/) - A platform for making universal native apps
+- [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for types
+- [Supabase](https://supabase.com/) - Open source Firebase alternative
+- [React Navigation](https://reactnavigation.org/) - Routing and navigation
+- [i18n](https://www.i18next.com/) - Internationalization framework
+
+## 📋 Prerequisites
+
+- [Bun](https://bun.sh/) (Latest version)
+- [Expo CLI](https://docs.expo.dev/workflow/expo-cli/)
+- [iOS Simulator](https://developer.apple.com/xcode/) (for iOS development)
+- [Android Studio](https://developer.android.com/studio) (for Android development)
+
+## 🛠 Development Setup
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd Repsy
+   ```
+
+2. Install dependencies:
+   ```bash
+   bun install
+   ```
+
+3. Set up environment variables:
+   - Copy `.env.development` to create your local environment file
+   - Update the necessary environment variables
+
+4. Start the development server:
+   ```bash
+   bun start
+   ```
+
+## 📱 Running the App
+
+- iOS Simulator: Press `i` in the terminal or run `bun run ios`
+- Android Emulator: Press `a` in the terminal or run `bun run android`
+- Web: Press `w` in the terminal or run `bun run web`
+
+## 🧪 Testing
 
 ```bash
-yarn
-yarn start
+# Run all tests
+bun test
+
+# Run tests in watch mode
+bun test:watch
+
+# Generate test coverage report
+bun test:coverage
 ```
 
-To make things work on your local simulator, or on your phone, you need first to [run `eas build`](https://github.com/infinitered/ignite/blob/master/docs/expo/EAS.md). We have many shortcuts on `package.json` to make it easier:
+## 🔧 Available Scripts
 
-```bash
-yarn build:ios:sim # build for ios simulator
-yarn build:ios:dev # build for ios device
-yarn build:ios:prod # build for ios device
+- `bun run dev` - Start the Expo development server
+- `bun run ios` - Run on iOS simulator
+- `bun run android` - Run on Android emulator
+- `bun run web` - Run on web browser
+- `bun run lint` - Run ESLint
+- `bun run lint:fix` - Fix ESLint errors
+- `bun run type-check` - Run TypeScript type checking
+- `bun run test` - Run tests
+
+## 📁 Project Structure
+
+```
+├── @types/              # TypeScript type definitions
+├── assets/              # Static assets (images, fonts, etc.)
+├── src/
+│   ├── app/            # App navigation and screens
+│   ├── components/     # Reusable components
+│   ├── config/        # App configuration
+│   ├── features/      # Feature-specific code
+│   ├── hooks/         # Custom React hooks
+│   ├── lib/           # Third-party library configurations
+│   └── utils/         # Utility functions
+├── test/              # Test setup and configurations
+└── .github/           # GitHub Actions workflows
 ```
 
-### `./assets` directory
+## 🔍 Code Quality
 
-This directory is designed to organize and store various assets, making it easy for you to manage and use them in your application. The assets are further categorized into subdirectories, including `icons` and `images`:
+- ESLint for code linting
+- Prettier for code formatting
+- Husky for Git hooks
+- GitHub Actions for CI/CD
 
-```tree
-assets
-├── icons
-└── images
-```
+## 🧪 Testing Tools
 
-**icons**
-This is where your icon assets will live. These icons can be used for buttons, navigation elements, or any other UI components. The recommended format for icons is PNG, but other formats can be used as well.
+- Jest for unit and integration testing
+- Maestro for E2E testing
 
-Ignite comes with a built-in `Icon` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/app/components/Icon.md).
+## 📱 App Configuration
 
-**images**
-This is where your images will live, such as background images, logos, or any other graphics. You can use various formats such as PNG, JPEG, or GIF for your images.
+- `app.config.ts` - Expo configuration
+- `babel.config.js` - Babel configuration
+- `tsconfig.json` - TypeScript configuration
+- `metro.config.js` - Metro bundler configuration
 
-Another valuable built-in component within Ignite is the `AutoImage` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-AutoImage.md).
+## 🤝 Contributing
 
-How to use your `icon` or `image` assets:
+1. Create a feature branch from `main`
+2. Make your changes
+3. Run tests and ensure they pass
+4. Submit a pull request
 
-```typescript
-import { Image } from 'react-native';
+## 📄 License
 
-const MyComponent = () => {
-  return (
-    <Image source={require('../assets/images/my_image.png')} />
-  );
-};
-```
-
-## Running Maestro end-to-end tests
-
-Follow our [Maestro Setup](https://ignitecookbook.com/docs/recipes/MaestroSetup) recipe.
-
-## Next Steps
-
-### Ignite Cookbook
-
-[Ignite Cookbook](https://ignitecookbook.com/) is an easy way for developers to browse and share code snippets (or “recipes”) that actually work.
-
-### Upgrade Ignite boilerplate
-
-Read our [Upgrade Guide](https://ignitecookbook.com/docs/recipes/UpdatingIgnite) to learn how to upgrade your Ignite project.
-
-## Community
-
-⭐️ Help us out by [starring on GitHub](https://github.com/infinitered/ignite), filing bug reports in [issues](https://github.com/infinitered/ignite/issues) or [ask questions](https://github.com/infinitered/ignite/discussions).
-
-💬 Join us on [Slack](https://join.slack.com/t/infiniteredcommunity/shared_invite/zt-1f137np4h-zPTq_CbaRFUOR_glUFs2UA) to discuss.
-
-📰 Make our Editor-in-chief happy by [reading the React Native Newsletter](https://reactnativenewsletter.com/).
+This project is licensed under the MIT License.

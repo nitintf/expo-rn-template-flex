@@ -39,20 +39,33 @@ export const useAppTheme = (): UseAppThemeValue => {
 
   const themed = useCallback(
     <T>(styleOrStyleFn: ThemedStyle<T> | StyleProp<T> | ThemedStyleArray<T>): T => {
-      const flatStyles = [styleOrStyleFn].flat(3)
-      return Object.assign(
-        {},
-        ...flatStyles.map((style) => (typeof style === "function" ? style(theme) : style)),
-      ) as T
+      try {
+        const flatStyles = Array.isArray(styleOrStyleFn) ? styleOrStyleFn.flat(3) : [styleOrStyleFn]
+
+        return flatStyles.reduce<T>((acc, style) => {
+          const styleValue = typeof style === "function" ? style(theme) : style
+          // Ensure we're only spreading object types
+          if (styleValue && typeof styleValue === "object") {
+            return { ...acc, ...styleValue }
+          }
+          return acc
+        }, {} as T)
+      } catch (error) {
+        console.error("Error in themed function:", error)
+        return {} as T
+      }
     },
     [theme],
   )
 
-  return {
-    navTheme,
-    setThemeContextOverride,
-    theme,
-    themeContext,
-    themed,
-  }
+  return useMemo(
+    () => ({
+      navTheme,
+      setThemeContextOverride,
+      theme,
+      themeContext,
+      themed,
+    }),
+    [navTheme, setThemeContextOverride, theme, themeContext, themed],
+  )
 }

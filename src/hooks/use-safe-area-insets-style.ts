@@ -9,7 +9,7 @@ const propertySuffixMap = {
   right: "End",
   start: "Start",
   end: "End",
-}
+} as const
 
 const edgeInsetMap: Record<string, Edge> = {
   start: "left",

@@ -15,8 +15,8 @@ export interface SignInBottomSheetRef {
   close: () => void
 }
 
-const SignInBottomSheet = forwardRef<SignInBottomSheetRef, {}>(
-  (props, ref: Ref<SignInBottomSheetRef>) => {
+const SignInBottomSheet = forwardRef<SignInBottomSheetRef>(
+  (_props, ref: Ref<SignInBottomSheetRef>) => {
     const bottomSheetRef = useRef<BottomSheet>(null)
 
     const { themed } = useAppTheme()
