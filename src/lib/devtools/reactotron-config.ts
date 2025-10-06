@@ -1,10 +1,6 @@
 import { Href, router } from "expo-router"
 import { NativeModules, Platform } from "react-native"
 import { ArgType } from "reactotron-core-client"
-import { ReactotronReactNative } from "reactotron-react-native"
-import mmkvPlugin from "reactotron-react-native-mmkv"
-
-import { clear, storage } from "@/utils/storage"
 
 import { Reactotron } from "./reactotron-client"
 
@@ -14,8 +10,6 @@ const reactotron = Reactotron.configure({
     Reactotron.clear()
   },
 })
-
-reactotron.use(mmkvPlugin<ReactotronReactNative>({ storage }))
 
 if (Platform.OS !== "web") {
   reactotron.useReactNative({
@@ -32,16 +26,6 @@ reactotron.onCustomCommand({
   handler: () => {
     Reactotron.log("Showing React Native dev menu")
     NativeModules.DevMenu.show()
-  },
-})
-
-reactotron.onCustomCommand({
-  title: "Reset Root Store",
-  description: "Resets the MST store",
-  command: "resetStore",
-  handler: () => {
-    Reactotron.log("resetting store")
-    clear()
   },
 })
 

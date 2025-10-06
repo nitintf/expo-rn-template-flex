@@ -49,6 +49,21 @@
         "EXPO_NO_DOTENV": "1"
       }
     },
+    "dev-local": {
+      "env": {
+        "APP_ENV": "development",
+        "EXPO_NO_DOTENV": "1"
+      },
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "image": "macos-sequoia-15.3-xcode-16.2"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "simulator": {
       "ios": {
         "simulator": true,

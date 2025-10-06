@@ -3,8 +3,12 @@ import { useEffect, useState } from "react"
 import { useFonts } from "@expo-google-fonts/space-grotesk"
 
 import { initI18n } from "@/lib/i18n"
-import { customFontsToLoad } from "@/lib/theme"
 import { loadDateFnsLocale } from "@/utils/format-date"
+
+const customFontsToLoad = {
+  SpaceGrotesk_400Regular: require("@expo-google-fonts/space-grotesk/SpaceGrotesk_400Regular.ttf"),
+  SpaceGrotesk_700Bold: require("@expo-google-fonts/space-grotesk/SpaceGrotesk_700Bold.ttf"),
+}
 
 export function useInitialLoad() {
   const [fontsLoaded, fontError] = useFonts(customFontsToLoad)

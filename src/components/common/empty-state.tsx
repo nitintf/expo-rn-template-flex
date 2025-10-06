@@ -1,12 +1,10 @@
 import { Image, ImageProps, ImageStyle, StyleProp, TextStyle, View, ViewStyle } from "react-native"
 
-import { useAppTheme } from "@/hooks/use-app-theme"
 import { translate } from "@/lib/i18n"
+import { cn } from "@/utils/cn"
 
 import { Button, ButtonProps } from "../ui/button"
 import { Text, TextProps } from "../ui/text"
-
-import type { ThemedStyle } from "@/lib/theme"
 
 const sadFace = require("assets/images/sad-face.png")
 
@@ -76,174 +74,146 @@ interface EmptyStateProps {
   /**
    * The button text to display if not using `buttonTx`.
    */
-  button?: TextProps["text"]
+  button?: ButtonProps["text"]
   /**
    * Button text which is looked up via i18n.
    */
-  buttonTx?: TextProps["tx"]
+  buttonTx?: ButtonProps["tx"]
   /**
    * Optional button options to pass to i18n. Useful for interpolation
    * as well as explicitly setting locale or translation fallbacks.
    */
-  buttonTxOptions?: TextProps["txOptions"]
+  buttonTxOptions?: ButtonProps["txOptions"]
   /**
    * Style overrides for button.
    */
   buttonStyle?: ButtonProps["style"]
   /**
-   * Style overrides for button text.
-   */
-  buttonTextStyle?: ButtonProps["textStyle"]
-  /**
-   * Called when the button is pressed.
-   */
-  buttonOnPress?: ButtonProps["onPress"]
-  /**
    * Pass any additional props directly to the Button component.
    */
   ButtonProps?: ButtonProps
-}
-
-interface EmptyStatePresetItem {
-  imageSource: ImageProps["source"]
-  heading: TextProps["text"]
-  content: TextProps["text"]
-  button: TextProps["text"]
+  /**
+   * Additional Tailwind classes for the container
+   */
+  className?: string
+  /**
+   * Additional Tailwind classes for the image
+   */
+  imageClassName?: string
+  /**
+   * Additional Tailwind classes for the heading
+   */
+  headingClassName?: string
+  /**
+   * Additional Tailwind classes for the content
+   */
+  contentClassName?: string
+  /**
+   * Additional Tailwind classes for the button
+   */
+  buttonClassName?: string
 }
 
 /**
- * A component to use when there is no data to display. It can be utilized to direct the user what to do next.
+ * A component to show when there is no data to display. It can be utilized to get the user's attention with a friendly illustration and a message.
  * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/app/components/EmptyState/}
  * @param {EmptyStateProps} props - The props for the `EmptyState` component.
  * @returns {JSX.Element} The rendered `EmptyState` component.
  */
 export function EmptyState(props: EmptyStateProps) {
   const {
-    theme,
-    themed,
-    theme: { spacing },
-  } = useAppTheme()
-
-  const EmptyStatePresets = {
-    generic: {
-      imageSource: sadFace,
-      heading: translate("emptyStateComponent:generic.heading"),
-      content: translate("emptyStateComponent:generic.content"),
-      button: translate("emptyStateComponent:generic.button"),
-    } as EmptyStatePresetItem,
-  } as const
-
-  const preset = EmptyStatePresets[props.preset ?? "generic"]
-
-  const {
-    button = preset.button,
+    button,
     buttonTx,
-    buttonOnPress,
     buttonTxOptions,
-    content = preset.content,
+    buttonStyle,
+    ButtonProps,
+    content,
     contentTx,
     contentTxOptions,
-    heading = preset.heading,
+    contentStyle,
+    ContentTextProps,
+    heading,
     headingTx,
     headingTxOptions,
-    imageSource = preset.imageSource,
-    style: $containerStyleOverride,
-    buttonStyle: $buttonStyleOverride,
-    buttonTextStyle: $buttonTextStyleOverride,
-    contentStyle: $contentStyleOverride,
-    headingStyle: $headingStyleOverride,
-    imageStyle: $imageStyleOverride,
-    ButtonProps,
-    ContentTextProps,
+    headingStyle,
     HeadingTextProps,
+    imageSource,
+    imageStyle,
     ImageProps,
+    preset = "generic",
+    style,
+    className = "",
+    imageClassName = "",
+    headingClassName = "",
+    contentClassName = "",
+    buttonClassName = "",
   } = props
 
-  const isImagePresent = !!imageSource
-  const isHeadingPresent = !!(heading || headingTx)
-  const isContentPresent = !!(content || contentTx)
-  const isButtonPresent = !!(button || buttonTx)
+  const headingContent = headingTx ? translate(headingTx, headingTxOptions) : heading
+  const contentContent = contentTx ? translate(contentTx, contentTxOptions) : content
+  const buttonContent = buttonTx ? translate(buttonTx, buttonTxOptions) : button
 
-  const $containerStyles = [$containerStyleOverride]
-  const $imageStyles = [
-    $image,
-    (isHeadingPresent || isContentPresent || isButtonPresent) && { marginBottom: spacing.xxxs },
-    $imageStyleOverride,
-    ImageProps?.style,
-  ]
-  const $headingStyles = [
-    themed($heading),
-    isImagePresent && { marginTop: spacing.xxxs },
-    (isContentPresent || isButtonPresent) && { marginBottom: spacing.xxxs },
-    $headingStyleOverride,
-    HeadingTextProps?.style,
-  ]
-  const $contentStyles = [
-    themed($content),
-    (isImagePresent || isHeadingPresent) && { marginTop: spacing.xxxs },
-    isButtonPresent && { marginBottom: spacing.xxxs },
-    $contentStyleOverride,
-    ContentTextProps?.style,
-  ]
-  const $buttonStyles = [
-    (isImagePresent || isHeadingPresent || isContentPresent) && { marginTop: spacing.xl },
-    $buttonStyleOverride,
-    ButtonProps?.style,
-  ]
+  const containerClasses = cn(
+    "flex-1 items-center justify-center px-4 py-8",
+    className
+  )
+
+  const imageClasses = cn(
+    "w-32 h-32 mb-6",
+    imageClassName
+  )
+
+  const headingClasses = cn(
+    "text-xl font-semibold text-gray-900 text-center mb-2",
+    headingClassName
+  )
+
+  const contentClasses = cn(
+    "text-base text-gray-600 text-center mb-6",
+    contentClassName
+  )
+
+  const buttonClasses = cn(
+    buttonClassName
+  )
 
   return (
-    <View style={$containerStyles}>
-      {isImagePresent && (
+    <View className={containerClasses} style={style}>
+      {imageSource && (
         <Image
           source={imageSource}
+          className={imageClasses}
+          style={imageStyle}
           {...ImageProps}
-          style={$imageStyles}
-          tintColor={theme.isDark ? theme.colors.palette.neutral900 : undefined}
         />
       )}
 
-      {isHeadingPresent && (
+      {!!headingContent && (
         <Text
-          preset="subheading"
-          text={heading}
-          tx={headingTx}
-          txOptions={headingTxOptions}
+          text={headingContent}
           {...HeadingTextProps}
-          style={$headingStyles}
+          className={headingClasses}
+          style={headingStyle}
         />
       )}
 
-      {isContentPresent && (
+      {!!contentContent && (
         <Text
-          text={content}
-          tx={contentTx}
-          txOptions={contentTxOptions}
+          text={contentContent}
           {...ContentTextProps}
-          style={$contentStyles}
+          className={contentClasses}
+          style={contentStyle}
         />
       )}
 
-      {isButtonPresent && (
+      {!!buttonContent && (
         <Button
-          onPress={buttonOnPress}
-          text={button}
-          tx={buttonTx}
-          txOptions={buttonTxOptions}
-          textStyle={$buttonTextStyleOverride}
+          text={buttonContent}
           {...ButtonProps}
-          style={$buttonStyles}
+          className={buttonClasses}
+          style={buttonStyle}
         />
       )}
     </View>
   )
 }
-
-const $image: ImageStyle = { alignSelf: "center" }
-const $heading: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  textAlign: "center",
-  paddingHorizontal: spacing.lg,
-})
-const $content: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  textAlign: "center",
-  paddingHorizontal: spacing.lg,
-})

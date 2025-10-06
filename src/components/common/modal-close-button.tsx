@@ -2,8 +2,7 @@ import Feather from "@expo/vector-icons/Feather"
 import { ViewStyle } from "react-native"
 
 import { Button } from "@/components/ui"
-import { useAppTheme } from "@/hooks/use-app-theme"
-import { ThemedStyle } from "@/lib/theme"
+import { cn } from "@/utils/cn"
 
 interface Props {
   /*
@@ -15,31 +14,26 @@ interface Props {
    * Style for the button
    */
   style?: ViewStyle
+
+  /*
+   * Additional Tailwind classes
+   */
+  className?: string
 }
 
-export const ModalCloseButton = ({ onPress, style }: Props) => {
-  const {
-    themed,
-    theme: { colors },
-  } = useAppTheme()
-
+export const ModalCloseButton = ({ onPress, style, className = "" }: Props) => {
   return (
-    <Button preset={"filled"} style={[themed($buttonStyles), style]} onPress={onPress} iconButton>
-      <Feather name="x" size={16} color={colors.textDim} />
+    <Button 
+      preset="filled" 
+      className={cn(
+        "absolute top-0 right-4 items-center justify-center z-10 rounded-full min-h-10 h-10 w-10",
+        className
+      )} 
+      style={style} 
+      onPress={onPress} 
+      iconButton
+    >
+      <Feather name="x" size={16} color="#6B7280" />
     </Button>
   )
 }
-
-const $buttonStyles: ThemedStyle<ViewStyle> = () => ({
-  position: "absolute",
-  top: 0,
-  right: 16,
-
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 1,
-  borderRadius: 100,
-  minHeight: 40,
-  height: 40,
-  width: 40,
-})

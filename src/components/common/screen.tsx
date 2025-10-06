@@ -15,9 +15,8 @@ import {
 } from "react-native"
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
 
-import { useAppTheme } from "@/hooks/use-app-theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "@/hooks/use-safe-area-insets-style"
-import { $styles } from "@/lib/theme"
+import { cn } from "@/utils/cn"
 
 export const DEFAULT_BOTTOM_OFFSET = 50
 
@@ -62,6 +61,14 @@ interface BaseScreenProps {
    * Pass any additional props directly to the KeyboardAvoidingView component.
    */
   KeyboardAvoidingViewProps?: KeyboardAvoidingViewProps
+  /**
+   * Additional Tailwind classes for the container
+   */
+  className?: string
+  /**
+   * Additional Tailwind classes for the content
+   */
+  contentClassName?: string
 }
 
 interface FixedScreenProps extends BaseScreenProps {
@@ -175,10 +182,17 @@ function useAutoPreset(props: AutoScreenProps): {
  * @returns {JSX.Element} - The rendered `ScreenWithoutScrolling` component.
  */
 function ScreenWithoutScrolling(props: ScreenProps) {
-  const { style, contentContainerStyle, children, preset } = props
+  const { style, contentContainerStyle, children, preset, className = "", contentClassName = "" } = props
   return (
-    <View style={[$outerStyle, style]}>
-      <View style={[$innerStyle, preset === "fixed" && $justifyFlexEnd, contentContainerStyle]}>
+    <View className={cn("flex-1 h-full w-full", className)} style={style}>
+      <View 
+        className={cn(
+          "justify-start items-stretch",
+          preset === "fixed" && "justify-end",
+          contentClassName
+        )} 
+        style={contentContainerStyle}
+      >
         {children}
       </View>
     </View>
@@ -197,6 +211,8 @@ function ScreenWithScrolling(props: ScreenProps) {
     contentContainerStyle,
     ScrollViewProps,
     style,
+    className = "",
+    contentClassName = "",
   } = props as ScrollScreenProps
 
   const ref = useRef<ScrollView>(null)
@@ -220,9 +236,9 @@ function ScreenWithScrolling(props: ScreenProps) {
         onContentSizeChange(w, h)
         ScrollViewProps?.onContentSizeChange?.(w, h)
       }}
-      style={[$outerStyle, ScrollViewProps?.style, style]}
+      className={cn("flex-1 h-full w-full", className)}
+      style={[ScrollViewProps?.style, style]}
       contentContainerStyle={[
-        $innerStyle,
         ScrollViewProps?.contentContainerStyle,
         contentContainerStyle,
       ]}
@@ -242,30 +258,27 @@ function ScreenWithScrolling(props: ScreenProps) {
  */
 export function Screen(props: ScreenProps) {
   const {
-    theme: { colors },
-    themeContext,
-  } = useAppTheme()
-  const {
     backgroundColor,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
     safeAreaEdges,
     StatusBarProps,
     statusBarStyle,
+    className = "",
   } = props
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
   return (
     <View
+      className={cn("flex-1 h-full w-full", className)}
       style={[
-        $containerStyle,
-        { backgroundColor: backgroundColor || colors.background },
+        { backgroundColor },
         $containerInsets,
       ]}
     >
       <StatusBar
-        style={statusBarStyle || (themeContext === "dark" ? "light" : "dark")}
+        style={statusBarStyle || "dark"}
         {...StatusBarProps}
       />
 
@@ -273,7 +286,8 @@ export function Screen(props: ScreenProps) {
         behavior={isIos ? "padding" : "height"}
         keyboardVerticalOffset={keyboardOffset}
         {...KeyboardAvoidingViewProps}
-        style={[$styles.flex1, KeyboardAvoidingViewProps?.style]}
+        className="flex-1"
+        style={KeyboardAvoidingViewProps?.style}
       >
         {isNonScrolling(props.preset) ? (
           <ScreenWithoutScrolling {...props} />
@@ -283,25 +297,4 @@ export function Screen(props: ScreenProps) {
       </KeyboardAvoidingView>
     </View>
   )
-}
-
-const $containerStyle: ViewStyle = {
-  flex: 1,
-  height: "100%",
-  width: "100%",
-}
-
-const $outerStyle: ViewStyle = {
-  flex: 1,
-  height: "100%",
-  width: "100%",
-}
-
-const $justifyFlexEnd: ViewStyle = {
-  justifyContent: "flex-end",
-}
-
-const $innerStyle: ViewStyle = {
-  justifyContent: "flex-start",
-  alignItems: "stretch",
 }

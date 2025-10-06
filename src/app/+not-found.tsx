@@ -4,16 +4,10 @@ import { TextStyle, View, ViewStyle } from "react-native"
 import { Icon } from "@/components/common/icon"
 import { Screen } from "@/components/common/screen"
 import { Button, Text } from "@/components/ui"
-import { useAppTheme } from "@/hooks/use-app-theme"
-
-import type { ThemedStyle } from "@/lib/theme"
+import { cn } from "@/utils/cn"
 
 export default function NotFoundScreen() {
   const router = useRouter()
-  const {
-    themed,
-    theme: { colors },
-  } = useAppTheme()
 
   const handleGoBack = () => {
     // This will navigate back or to the root if there's no history
@@ -27,23 +21,23 @@ export default function NotFoundScreen() {
   return (
     <Screen
       preset="scroll"
-      contentContainerStyle={themed($contentContainer)}
+      className="flex-1 p-6 items-center justify-between"
       safeAreaEdges={["top", "bottom"]}
     >
       <Stack.Screen options={{ title: "Not Found", headerShown: false }} />
 
-      <View style={themed($topSection)}>
-        <Icon icon="x" size={64} color={colors.error} />
+      <View className="flex-1 items-center justify-center gap-4 px-6">
+        <Icon icon="x" size={64} color="#EF4444" />
         <Text
           preset="heading"
           tx="error:notFound.title"
           text="Oops! Page Not Found"
-          style={themed($title)}
+          className="text-center mt-8 text-4xl font-bold text-gray-900"
         />
         <Text
           tx="error:notFound.message"
           text="The page you're looking for doesn't exist or has been moved."
-          style={themed($message)}
+          className="text-center mt-2 text-base text-gray-600"
         />
       </View>
 
@@ -51,39 +45,9 @@ export default function NotFoundScreen() {
         preset="filled"
         tx="common:goBack"
         text="Go Back"
-        style={themed($button)}
+        className="px-8 mb-6"
         onPress={handleGoBack}
       />
     </Screen>
   )
 }
-
-const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flex: 1,
-  padding: spacing.lg,
-  alignItems: "center",
-  justifyContent: "space-between",
-})
-
-const $topSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flex: 1,
-  alignItems: "center",
-  justifyContent: "center",
-  gap: spacing.md,
-  paddingHorizontal: spacing.lg,
-})
-
-const $title: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  textAlign: "center",
-  marginTop: spacing.xl,
-})
-
-const $message: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  textAlign: "center",
-  marginTop: spacing.sm,
-})
-
-const $button: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingHorizontal: spacing.xxl,
-  marginBottom: spacing.lg,
-})

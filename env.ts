@@ -26,8 +26,6 @@ const clientSchema = z.object({
   BUNDLE_ID: z.string(),
   PACKAGE: z.string(),
   VERSION: z.string(),
-  SUPABASE_URL: z.string(),
-  SUPABASE_ANON_KEY: z.string(),
 })
 
 const buildTimeSchema = z.object({
@@ -42,8 +40,6 @@ const clientEnv = {
   BUNDLE_ID: withEnvSuffix(BUNDLE_ID),
   PACKAGE: withEnvSuffix(PACKAGE),
   VERSION: packageJSON.version,
-  SUPABASE_URL: process.env.SUPABASE_URL,
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
 }
 
 const buildTimeEnv = {

@@ -1,16 +1,13 @@
 import { ReactNode } from "react"
 
 import { TOptions } from "i18next"
-import { StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle } from "react-native"
+import { Text as RNText, TextProps as RNTextProps } from "react-native"
 
-import { useAppTheme } from "@/hooks/use-app-theme"
 import { isRTL, translate, TxKeyPath } from "@/lib/i18n"
-import { typography } from "@/lib/theme/typography"
+import { cn } from "@/utils/cn"
 
-import type { ThemedStyle, ThemedStyleArray } from "@/lib/theme"
-
-type Sizes = keyof typeof $sizeStyles
-type Weights = keyof typeof typography.primary
+type Sizes = "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl"
+type Weights = "normal" | "medium" | "bold"
 type Presets = "default" | "bold" | "heading" | "subheading" | "formLabel" | "formHelper"
 
 export interface TextProps extends RNTextProps {
@@ -28,10 +25,6 @@ export interface TextProps extends RNTextProps {
    */
   txOptions?: TOptions
   /**
-   * An optional style override useful for padding & margin.
-   */
-  style?: StyleProp<TextStyle>
-  /**
    * One of the different @types of text presets.
    */
   preset?: Presets
@@ -47,63 +40,78 @@ export interface TextProps extends RNTextProps {
    * Children components.
    */
   children?: ReactNode
+  /**
+   * Additional Tailwind classes
+   */
+  className?: string
 }
 
 export function Text(props: TextProps) {
-  const { weight, size, tx, txOptions, text, children, style: $styleOverride, ...rest } = props
-  const { themed } = useAppTheme()
+  const { 
+    weight, 
+    size, 
+    tx, 
+    txOptions, 
+    text, 
+    children, 
+    preset = "default",
+    className = "",
+    ...rest 
+  } = props
 
   const i18nText = tx && translate(tx, txOptions)
   const content = i18nText || text || children
 
-  const preset: Presets = props.preset ?? "default"
-  const $styles: StyleProp<TextStyle> = [
-    $rtlStyle,
-    themed($presets[preset]),
-    weight && $fontWeightStyles[weight],
-    size && $sizeStyles[size],
-    $styleOverride,
-  ]
+  // Generate Tailwind classes based on props
+  const getSizeClasses = (size?: Sizes) => {
+    switch (size) {
+      case "xxs": return "text-xs"
+      case "xs": return "text-sm"
+      case "sm": return "text-base"
+      case "md": return "text-lg"
+      case "lg": return "text-xl"
+      case "xl": return "text-2xl"
+      case "xxl": return "text-4xl"
+      default: return "text-base"
+    }
+  }
+
+  const getWeightClasses = (weight?: Weights) => {
+    switch (weight) {
+      case "normal": return "font-normal"
+      case "medium": return "font-medium"
+      case "bold": return "font-bold"
+      default: return "font-normal"
+    }
+  }
+
+  const getPresetClasses = (preset: Presets) => {
+    switch (preset) {
+      case "bold": return "font-bold"
+      case "heading": return "text-4xl font-bold"
+      case "subheading": return "text-xl font-medium"
+      case "formLabel": return "text-base font-medium"
+      case "formHelper": return "text-sm font-normal text-gray-500"
+      default: return "text-base font-normal"
+    }
+  }
+
+  const getRTLClasses = () => isRTL ? "text-right" : "text-left"
+
+  const combinedClasses = cn(
+    getPresetClasses(preset),
+    size && getSizeClasses(size),
+    weight && getWeightClasses(weight),
+    getRTLClasses(),
+    className
+  )
 
   return (
-    <RNText {...rest} style={$styles}>
+    <RNText 
+      {...rest} 
+      className={combinedClasses}
+    >
       {content}
     </RNText>
   )
 }
-
-const $sizeStyles = {
-  xxl: { fontSize: 36, lineHeight: 44 } satisfies TextStyle,
-  xl: { fontSize: 24, lineHeight: 34 } satisfies TextStyle,
-  lg: { fontSize: 20, lineHeight: 32 } satisfies TextStyle,
-  md: { fontSize: 18, lineHeight: 26 } satisfies TextStyle,
-  sm: { fontSize: 16, lineHeight: 24 } satisfies TextStyle,
-  xs: { fontSize: 14, lineHeight: 21 } satisfies TextStyle,
-  xxs: { fontSize: 12, lineHeight: 18 } satisfies TextStyle,
-}
-
-const $fontWeightStyles = Object.entries(typography.primary).reduce((acc, [weight, fontFamily]) => {
-  return { ...acc, [weight]: { fontFamily } }
-}, {}) as Record<Weights, TextStyle>
-
-const $baseStyle: ThemedStyle<TextStyle> = (theme) => ({
-  ...$sizeStyles.sm,
-  ...$fontWeightStyles.normal,
-  color: theme.colors.text,
-})
-
-const $presets: Record<Presets, ThemedStyleArray<TextStyle>> = {
-  default: [$baseStyle],
-  bold: [$baseStyle, { ...$fontWeightStyles.bold }],
-  heading: [
-    $baseStyle,
-    {
-      ...$sizeStyles.xxl,
-      ...$fontWeightStyles.bold,
-    },
-  ],
-  subheading: [$baseStyle, { ...$sizeStyles.lg, ...$fontWeightStyles.medium }],
-  formLabel: [$baseStyle, { ...$fontWeightStyles.medium }],
-  formHelper: [$baseStyle, { ...$sizeStyles.sm, ...$fontWeightStyles.normal }],
-}
-const $rtlStyle: TextStyle = isRTL ? { writingDirection: "rtl" } : {}

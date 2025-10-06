@@ -5,14 +5,10 @@ import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
 import { Icon } from "@/components/common/icon"
 import { Screen } from "@/components/common/screen"
 import { Button, Text } from "@/components/ui"
-import { useAppTheme } from "@/hooks/use-app-theme"
-
-import type { ThemedStyle } from "@/lib/theme"
 
 export interface ErrorDetailsProps {
   error: Error
   errorInfo: ErrorInfo | null
-
   onReset(): void
 }
 
@@ -22,80 +18,48 @@ export interface ErrorDetailsProps {
  * @returns {JSX.Element} The rendered `ErrorDetails` component.
  */
 export function ErrorDetails(props: ErrorDetailsProps) {
-  const { themed } = useAppTheme()
-
   return (
     <Screen
       preset="fixed"
       safeAreaEdges={["top", "bottom"]}
-      contentContainerStyle={themed($contentContainer)}
+      className="bg-white"
     >
-      <View style={$topSection}>
-        <Icon icon="ladybug" size={64} />
-        <Text style={themed($heading)} preset="subheading" tx="errorScreen:title" />
-        <Text tx="errorScreen:friendlySubtitle" />
+      <View className="flex-1 items-center justify-center px-4">
+        <Icon icon="ladybug" size={64} className="mb-4" />
+        <Text 
+          preset="subheading" 
+          tx="errorScreen:title" 
+          className="text-xl font-semibold text-gray-900 text-center mb-2"
+        />
+        <Text 
+          tx="errorScreen:friendlySubtitle" 
+          className="text-base text-gray-600 text-center mb-6"
+        />
       </View>
 
-      <ScrollView
-        style={themed($errorSection)}
-        contentContainerStyle={themed($errorSectionContentContainer)}
-      >
-        <Text style={themed($errorContent)} weight="bold" text={`${props.error}`.trim()} />
-        <Text
-          selectable
-          style={themed($errorBacktrace)}
-          text={`${props.errorInfo?.componentStack ?? ""}`.trim()}
-        />
+      <ScrollView className="flex-1 bg-gray-100 mx-4 rounded-lg">
+        <View className="p-4">
+          <Text 
+            weight="bold" 
+            text={`${props.error}`.trim()} 
+            className="text-sm text-red-600 mb-2"
+          />
+          <Text
+            selectable
+            text={`${props.errorInfo?.componentStack ?? ""}`.trim()}
+            className="text-xs text-gray-700 font-mono"
+          />
+        </View>
       </ScrollView>
 
-      <Button
-        preset="reversed"
-        style={themed($resetButton)}
-        onPress={props.onReset}
-        tx="errorScreen:reset"
-      />
+      <View className="p-4">
+        <Button
+          preset="reversed"
+          tx="errorScreen:reset"
+          onPress={props.onReset}
+          className="bg-gray-800"
+        />
+      </View>
     </Screen>
   )
 }
-
-const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  alignItems: "center",
-  paddingHorizontal: spacing.lg,
-  paddingTop: spacing.xl,
-  flex: 1,
-})
-
-const $topSection: ViewStyle = {
-  flex: 1,
-  alignItems: "center",
-}
-
-const $heading: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  color: colors.error,
-  marginBottom: spacing.md,
-})
-
-const $errorSection: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  flex: 2,
-  backgroundColor: colors.separator,
-  marginVertical: spacing.md,
-  borderRadius: 6,
-})
-
-const $errorSectionContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  padding: spacing.md,
-})
-
-const $errorContent: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.error,
-})
-
-const $errorBacktrace: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  marginTop: spacing.md,
-  color: colors.textDim,
-})
-
-const $resetButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.error,
-  paddingHorizontal: spacing.xxl,
-})

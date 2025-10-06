@@ -25,7 +25,6 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
     orientation: "portrait",
     icon: "./assets/images/app-icon-all.png",
     userInterfaceStyle: "automatic",
-    newArchEnabled: true,
     updates: {
       fallbackToCacheTimeout: 0,
     },
@@ -50,7 +49,6 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
     plugins: [
       "expo-localization",
       "expo-secure-store",
-      "expo-apple-authentication",
       "expo-font",
       [
         "expo-splash-screen",

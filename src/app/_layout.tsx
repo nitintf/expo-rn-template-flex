@@ -5,9 +5,12 @@ import * as SplashScreen from "expo-splash-screen"
 import { ViewStyle } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { KeyboardProvider } from "react-native-keyboard-controller"
+import { NativeBaseProvider } from "native-base"
 
 import { useInitialLoad } from "@/hooks/use-initial-load"
-import { ThemeProvider } from "@/lib/theme"
+
+// Import global CSS for NativeWind
+import "../../global.css"
 
 SplashScreen.preventAutoHideAsync()
 
@@ -37,13 +40,13 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={$containerStyles}>
-      <ThemeProvider>
+      <NativeBaseProvider>
         <KeyboardProvider>
           {/* <BottomSheetModalProvider> */}
           <Slot />
           {/* </BottomSheetModalProvider> */}
         </KeyboardProvider>
-      </ThemeProvider>
+      </NativeBaseProvider>
     </GestureHandlerRootView>
   )
 }

@@ -11,8 +11,6 @@ import {
   ViewStyle,
 } from "react-native"
 
-import { useAppTheme } from "@/hooks/use-app-theme"
-
 export type IconTypes = keyof typeof iconRegistry
 
 // @ts-ignore
@@ -46,6 +44,10 @@ interface IconProps extends TouchableOpacityProps {
    * An optional function to be called when the icon is pressed
    */
   onPress?: TouchableOpacityProps["onPress"]
+  /**
+   * Additional Tailwind classes for the container
+   */
+  className?: string
 }
 
 /**
@@ -62,6 +64,7 @@ export function Icon(props: IconProps) {
     size,
     style: $imageStyleOverride,
     containerStyle: $containerStyleOverride,
+    className = "",
     ...WrapperProps
   } = props
 
@@ -70,11 +73,9 @@ export function Icon(props: IconProps) {
     TouchableOpacityProps | ViewProps
   >
 
-  const { theme } = useAppTheme()
-
   const $imageStyle: StyleProp<ImageStyle> = [
     $imageStyleBase,
-    { tintColor: color ?? theme.colors.text },
+    { tintColor: color ?? "#000000" },
     size !== undefined && { width: size, height: size },
     $imageStyleOverride,
   ]
@@ -83,6 +84,7 @@ export function Icon(props: IconProps) {
     <Wrapper
       accessibilityRole={isPressable ? "imagebutton" : undefined}
       {...WrapperProps}
+      className={className}
       style={$containerStyleOverride}
     >
       <Image style={$imageStyle} source={iconRegistry[icon]} />
