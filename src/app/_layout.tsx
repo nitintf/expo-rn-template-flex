@@ -5,6 +5,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { useInitialLoad } from '@/hooks/use-initial-load';
+import { DevTools } from '@/lib/devtools/query-devtools';
+import { QueryProvider } from '@/lib/query-client/query-provider';
 
 import type { ViewStyle } from 'react-native';
 
@@ -35,11 +37,14 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={$containerStyles}>
-      <KeyboardProvider>
-        <Slot />
-      </KeyboardProvider>
-    </GestureHandlerRootView>
+    <QueryProvider>
+      <GestureHandlerRootView style={$containerStyles}>
+        <KeyboardProvider>
+          <Slot />
+          {DevTools && <DevTools />}
+        </KeyboardProvider>
+      </GestureHandlerRootView>
+    </QueryProvider>
   );
 }
 

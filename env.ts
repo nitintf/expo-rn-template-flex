@@ -15,13 +15,14 @@ const PACKAGE = 'com.changethis.expo';
 const NAME = 'expo-temp';
 const SCHEME = 'expo-temp';
 
-const { EAS_PROJECT_ID } = process.env;
+const { EAS_PROJECT_ID, EXPO_PUBLIC_API_URL } = process.env;
 
 const clientSchema = z.object({
   APP_ENV: z.enum(['development', 'staging', 'production']),
   NAME: z.string(),
   PACKAGE: z.string(),
   VERSION: z.string(),
+  API_URL: z.string().url('API_URL must be a valid URL'),
 });
 
 const buildTimeSchema = z.object({
@@ -32,6 +33,7 @@ const clientEnv = {
   APP_ENV,
   NAME,
   VERSION: packageJSON.version,
+  API_URL: EXPO_PUBLIC_API_URL || 'https://api.example.com',
 };
 
 const buildTimeEnv = {
