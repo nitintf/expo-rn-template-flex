@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "Running typecheck and lint-staged tasks..."
+pnpm typecheck
+pnpm lint-staged

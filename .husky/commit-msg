@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Running commitlint..."
+
+cd "$(dirname "$0")/.." && npx --no -- commitlint --edit
