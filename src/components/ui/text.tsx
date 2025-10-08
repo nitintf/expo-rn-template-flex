@@ -12,7 +12,7 @@ import type { TextProps as RNTextProps } from 'react-native';
 
 const textVariants = cva(
   // Base classes
-  'text-base font-normal',
+  'text-base font-normal text-text-primary',
   {
     variants: {
       preset: {

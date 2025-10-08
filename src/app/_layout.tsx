@@ -48,7 +48,12 @@ export default function RootLayout() {
           <KeyboardProvider>
             <Slot />
             {DevTools && <DevTools />}
-            <ToastManager theme="dark" position="bottom" borderRadius={12} />
+            <ToastManager
+              theme="dark"
+              position="bottom"
+              borderRadius={12}
+              useModal={false}
+            />
           </KeyboardProvider>
         </GestureHandlerRootView>
       </SafeAreaProvider>
