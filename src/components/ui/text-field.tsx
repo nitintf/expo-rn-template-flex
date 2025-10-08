@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { cva } from 'class-variance-authority';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
 import { isRTL, translate } from '@/lib/i18n';
@@ -8,6 +8,7 @@ import { cn } from '@/utils/cn';
 import { Text } from './text';
 
 import type { TextProps } from './text';
+import type { VariantProps } from 'class-variance-authority';
 import type { ComponentType, Ref } from 'react';
 import type {
   ImageStyle,
@@ -17,6 +18,81 @@ import type {
   ViewStyle,
 } from 'react-native';
 
+const textFieldVariants = cva(
+  // Base classes
+  'flex-row items-center border-b px-0 py-3 min-h-12',
+  {
+    variants: {
+      status: {
+        default: 'border-gray-300',
+        error: 'border-red-500',
+        disabled: 'border-gray-300 opacity-50',
+      },
+      focused: {
+        true: 'border-white',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      status: 'default',
+      focused: false,
+    },
+  },
+);
+
+const textFieldInputVariants = cva(
+  // Base classes
+  'flex-1 text-base text-white bg-transparent',
+  {
+    variants: {
+      status: {
+        default: 'text-white',
+        error: 'text-red-300',
+        disabled: 'text-gray-500',
+      },
+    },
+    defaultVariants: {
+      status: 'default',
+    },
+  },
+);
+
+const textFieldLabelVariants = cva(
+  // Base classes
+  'text-sm font-medium mb-1',
+  {
+    variants: {
+      status: {
+        default: 'text-gray-400',
+        error: 'text-red-400',
+        disabled: 'text-gray-500',
+      },
+    },
+    defaultVariants: {
+      status: 'default',
+    },
+  },
+);
+
+const textFieldHelperVariants = cva(
+  // Base classes
+  'text-sm mt-1',
+  {
+    variants: {
+      status: {
+        default: 'text-gray-500',
+        error: 'text-red-600',
+        disabled: 'text-gray-400',
+      },
+    },
+    defaultVariants: {
+      status: 'default',
+    },
+  },
+);
+
+type TextFieldVariants = VariantProps<typeof textFieldVariants>;
+
 export interface TextFieldAccessoryProps {
   style: StyleProp<ViewStyle | TextStyle | ImageStyle>;
   status: TextFieldProps['status'];
@@ -24,11 +100,13 @@ export interface TextFieldAccessoryProps {
   editable: boolean;
 }
 
-export interface TextFieldProps extends Omit<TextInputProps, 'ref'> {
+export interface TextFieldProps
+  extends Omit<TextInputProps, 'ref'>,
+    TextFieldVariants {
   /**
    * A style modifier for different input states.
    */
-  status?: 'error' | 'disabled';
+  status?: 'error' | 'disabled' | 'default';
   /**
    * The label text to display if not using `labelTx`.
    */
@@ -154,7 +232,7 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(
       helperTx,
       helper,
       helperTxOptions,
-      status,
+      status = 'default',
       LeftAccessory,
       RightAccessory,
       TopAccessory,
@@ -173,6 +251,7 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(
     } = props;
 
     const input = useRef<TextInput>(null);
+    const [isFocused, setIsFocused] = useState(false);
 
     const disabled = TextInputProps.editable === false || status === 'disabled';
 
@@ -193,62 +272,32 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(
     }));
 
     const $containerStyles = [containerStyle];
-
     const $inputWrapperStyles = [inputWrapperStyle];
-
     const $inputStyles = [$inputStyleOverride];
-
     const $labelStyles = [LabelTextProps?.style];
-
     const $helperStyles = [HelperTextProps?.style];
 
-    const getStatusClasses = () => {
-      switch (status) {
-        case 'error':
-          return {
-            input: 'border-red-500 bg-red-50',
-            label: 'text-red-700',
-            helper: 'text-red-600',
-          };
-        case 'disabled':
-          return {
-            input: 'border-gray-300 bg-gray-100 text-gray-500',
-            label: 'text-gray-500',
-            helper: 'text-gray-400',
-          };
-        default:
-          return {
-            input: 'border-gray-300 bg-white focus:border-primary-500',
-            label: 'text-gray-700',
-            helper: 'text-gray-500',
-          };
-      }
-    };
-
-    const statusClasses = getStatusClasses();
-
     const inputWrapperClasses = cn(
-      'flex-row items-center border rounded-lg px-3 py-2 min-h-12',
-      statusClasses.input,
-      disabled && 'opacity-50',
+      textFieldVariants({
+        status: disabled ? 'disabled' : status,
+        focused: isFocused,
+      }),
       inputWrapperClassName,
     );
 
     const inputClasses = cn(
-      'flex-1 text-base text-gray-900',
+      textFieldInputVariants({ status: disabled ? 'disabled' : status }),
       isRTL ? 'text-right' : 'text-left',
       className,
     );
 
     const labelClasses = cn(
-      'text-sm font-medium mb-1',
-      statusClasses.label,
+      textFieldLabelVariants({ status: disabled ? 'disabled' : status }),
       labelClassName,
     );
 
     const helperClasses = cn(
-      'text-sm mt-1',
-      statusClasses.helper,
+      textFieldHelperVariants({ status: disabled ? 'disabled' : status }),
       helperClassName,
     );
 
@@ -298,6 +347,14 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(
             {...TextInputProps}
             editable={!disabled}
             placeholder={placeholderContent}
+            onFocus={(e) => {
+              setIsFocused(true);
+              TextInputProps.onFocus?.(e);
+            }}
+            onBlur={(e) => {
+              setIsFocused(false);
+              TextInputProps.onBlur?.(e);
+            }}
           />
 
           {RightAccessory && (

@@ -3,6 +3,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import {
+  initialWindowMetrics,
+  SafeAreaProvider,
+} from 'react-native-safe-area-context';
+import ToastManager from 'toastify-react-native';
 
 import { useInitialLoad } from '@/hooks/use-initial-load';
 import { DevTools } from '@/lib/devtools/query-devtools';
@@ -38,12 +43,15 @@ export default function RootLayout() {
 
   return (
     <QueryProvider>
-      <GestureHandlerRootView style={$containerStyles}>
-        <KeyboardProvider>
-          <Slot />
-          {DevTools && <DevTools />}
-        </KeyboardProvider>
-      </GestureHandlerRootView>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <GestureHandlerRootView style={$containerStyles}>
+          <KeyboardProvider>
+            <Slot />
+            {DevTools && <DevTools />}
+            <ToastManager theme="dark" position="bottom" borderRadius={12} />
+          </KeyboardProvider>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
     </QueryProvider>
   );
 }

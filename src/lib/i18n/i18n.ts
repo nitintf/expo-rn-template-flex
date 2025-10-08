@@ -4,7 +4,6 @@ import { initReactI18next } from 'react-i18next';
 import { I18nManager } from 'react-native';
 import 'intl-pluralrules';
 
-// if English isn't your default language, move Translations to the appropriate language file.
 import en from './translations/en';
 
 import type { Translations } from './translations/en';

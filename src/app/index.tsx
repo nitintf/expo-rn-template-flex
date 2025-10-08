@@ -1,23 +1,72 @@
-import { useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
+import { useState } from 'react';
+import { View } from 'react-native';
+import { Toast } from 'toastify-react-native';
 
-import { Button } from '@/components/ui';
+import { Header } from '@/components/common/header';
+import { Screen } from '@/components/common/screen';
+import { Button, Text, TextField } from '@/components/ui';
 
 export default function WelcomeScreen() {
-  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
 
-  const handleGoBack = () => {
-    router.push('/+not-found');
+  const handleSubmit = () => {
+    if (!email.trim() || !name.trim()) {
+      Toast.show({
+        text1: 'Error',
+        text2: 'Please enter your email and name',
+        type: 'error',
+      });
+      return;
+    }
+
+    Toast.show({
+      text1: 'Submitted',
+      text2: 'Your email and name have been submitted',
+      type: 'success',
+    });
   };
 
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-blue-500">
-        Welcome to Nativewind! Nitin is great
-      </Text>
-      <Button preset="filled" onPress={handleGoBack}>
-        <Text>Click me</Text>
-      </Button>
-    </View>
+    <Screen
+      preset="scroll"
+      contentClassName="flex-1"
+      safeAreaEdges={['top', 'bottom']}
+      systemBarStyle="light"
+    >
+      <Header
+        titleTx="welcomeScreen:title"
+        titleMode="center"
+        containerClassName="bg-white shadow-sm"
+      />
+
+      <View className="mb-12">
+        <Text
+          preset="heading"
+          className="text-center mb-4 text-white"
+          tx="welcomeScreen:content"
+        />
+      </View>
+
+      <View className="flex gap-4 px-6">
+        <TextField
+          labelTx="welcomeScreen:emailLabel"
+          placeholderTx="welcomeScreen:emailPlaceholder"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextField
+          labelTx="welcomeScreen:nameLabel"
+          placeholderTx="welcomeScreen:namePlaceholder"
+          value={name}
+          onChangeText={setName}
+        />
+        <Button
+          tx="welcomeScreen:submit"
+          className="mt-4"
+          onPress={handleSubmit}
+        />
+      </View>
+    </Screen>
   );
 }

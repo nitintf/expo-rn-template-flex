@@ -1,6 +1,5 @@
 import { ScrollView, View } from 'react-native';
 
-import { Icon } from '@/components/common/icon';
 import { Screen } from '@/components/common/screen';
 import { Button, Text } from '@/components/ui';
 
@@ -25,7 +24,6 @@ export function ErrorDetails(props: ErrorDetailsProps) {
       className="bg-white"
     >
       <View className="flex-1 items-center justify-center px-4">
-        <Icon icon="ladybug" size={64} className="mb-4" />
         <Text
           preset="subheading"
           tx="errorScreen:title"

@@ -1,3 +1,4 @@
+import { cva } from 'class-variance-authority';
 import { Pressable, View } from 'react-native';
 
 import { cn } from '@/utils/cn';
@@ -5,6 +6,7 @@ import { cn } from '@/utils/cn';
 import { Text } from './text';
 
 import type { TextProps } from './text';
+import type { VariantProps } from 'class-variance-authority';
 import type { ComponentType } from 'react';
 import type {
   PressableProps,
@@ -14,15 +16,64 @@ import type {
   ViewStyle,
 } from 'react-native';
 
-type Presets = 'default' | 'filled' | 'reversed' | 'primary';
-
 export interface ButtonAccessoryProps {
   style: StyleProp<ViewStyle>;
   pressableState: PressableStateCallbackType;
   disabled?: boolean;
 }
 
-export interface ButtonProps extends PressableProps {
+const buttonVariants = cva(
+  'flex-row items-center justify-center rounded-lg min-h-touch px-4 py-3',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-primary-main shadow-md',
+        secondary: 'bg-blue-neutral-main',
+        destructive: 'bg-red-100',
+        outline: 'border border-blue-neutral-main bg-transparent',
+        ghost: 'bg-transparent',
+        icon: 'bg-primary-main rounded-full min-w-touch min-h-touch p-0',
+      },
+      size: {
+        sm: 'min-h-10 px-3 py-2',
+        md: 'min-h-touch px-4 py-3',
+        lg: 'min-h-12 px-6 py-4',
+        icon: 'min-w-touch min-h-touch p-0',
+      },
+    },
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
+  },
+);
+
+const textVariants = cva('text-center font-primary font-medium', {
+  variants: {
+    variant: {
+      primary: 'text-text-primary',
+      secondary: 'text-text-primary',
+      destructive: 'text-text-primary',
+      outline: 'text-text-primary',
+      ghost: 'text-text-primary',
+      icon: 'text-text-primary',
+    },
+    size: {
+      sm: 'text-sm',
+      md: 'text-base',
+      lg: 'text-lg',
+      icon: 'text-base',
+    },
+  },
+  defaultVariants: {
+    variant: 'primary',
+    size: 'md',
+  },
+});
+
+export interface ButtonProps
+  extends PressableProps,
+    VariantProps<typeof buttonVariants> {
   /**
    * Text which is looked up via i18n.
    */
@@ -41,25 +92,9 @@ export interface ButtonProps extends PressableProps {
    */
   style?: StyleProp<ViewStyle>;
   /**
-   * An optional style override for the "pressed" state.
-   */
-  pressedStyle?: StyleProp<ViewStyle>;
-  /**
    * An optional style override for the button text.
    */
   textStyle?: StyleProp<TextStyle>;
-  /**
-   * An optional style override for the button text when in the "pressed" state.
-   */
-  pressedTextStyle?: StyleProp<TextStyle>;
-  /**
-   * An optional style override for the button text when in the "disabled" state.
-   */
-  disabledTextStyle?: StyleProp<TextStyle>;
-  /**
-   * One of the different @types of button presets.
-   */
-  preset?: Presets;
   /**
    * An optional component to render on the right side of the text.
    * Example: `RightAccessory={(props) => <View {...props} />}`
@@ -80,14 +115,6 @@ export interface ButtonProps extends PressableProps {
    */
   disabled?: boolean;
   /**
-   * icon button props, if true, the button will be styled as an icon button.
-   */
-  iconButton?: boolean;
-  /**
-   * An optional style override for the disabled state
-   */
-  disabledStyle?: StyleProp<ViewStyle>;
-  /**
    * Additional Tailwind classes for the button container
    */
   className?: string;
@@ -99,133 +126,110 @@ export interface ButtonProps extends PressableProps {
 
 /**
  * A component that allows users to take actions and make choices.
- * Wraps the Text component with a Pressable component.
- * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/app/components/Button/}
+ * Built with class-variance-authority for consistent styling variants.
  * @param {ButtonProps} props - The props for the `Button` component.
  * @returns {JSX.Element} The rendered `Button` component.
  * @example
- * <Button
- *   tx="common:ok"
- *   className="bg-primary-500 px-4 py-2 rounded-lg"
- *   textClassName="text-white font-medium"
- *   onPress={handleButtonPress}
- * />
+ * <Button variant="primary" size="md" onPress={handlePress}>
+ *   Click me
+ * </Button>
+ *
+ * <Button variant="icon" size="icon" onPress={handlePress}>
+ *   <Icon name="plus" />
+ * </Button>
  */
-export function Button(props: ButtonProps) {
-  const {
-    tx,
-    text,
-    txOptions,
-    textStyle: $textStyleOverride,
-    children,
-    RightAccessory,
-    LeftAccessory,
-    disabled,
-    iconButton = false,
-    className = '',
-    textClassName = '',
-    ...rest
-  } = props;
-
-  const preset: Presets = props.preset ?? 'default';
-
-  /**
-   * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
-   * @param {boolean} root0.pressed - The pressed state.
-   * @returns {string} The view classes based on the pressed state.
-   */
-  function getViewClasses({ pressed }: PressableStateCallbackType): string {
-    const baseClasses =
-      'flex-row min-h-14 rounded justify-center items-center px-4 py-3 overflow-hidden';
-
-    const presetClasses = {
-      default: 'border border-gray-300 bg-gray-100',
-      filled: 'bg-gray-300',
-      reversed: 'bg-gray-800',
-      primary: 'bg-primary-200',
-    };
-
-    const pressedClasses = {
-      default: 'bg-gray-200',
-      filled: 'bg-gray-200',
-      reversed: 'bg-gray-700',
-      primary: 'bg-primary-100',
-    };
-
-    return cn(
-      baseClasses,
-      presetClasses[preset],
-      pressed && pressedClasses[preset],
-      disabled && 'opacity-50',
-      className,
-    );
-  }
-
-  /**
-   * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
-   * @param {boolean} root0.pressed - The pressed state.
-   * @returns {string} The text classes based on the pressed state.
-   */
-  function getTextClasses({ pressed }: PressableStateCallbackType): string {
-    const baseClasses =
-      'text-base font-medium text-center flex-shrink flex-grow-0 z-10';
-
-    const presetClasses = {
-      default: 'text-gray-900',
-      filled: 'text-gray-900',
-      reversed: 'text-white',
-      primary: 'text-gray-900',
-    };
-
-    return cn(
-      baseClasses,
-      presetClasses[preset],
-      pressed && 'opacity-90',
-      disabled && 'opacity-50',
-      textClassName,
-    );
-  }
-
+export function Button({
+  className,
+  textClassName,
+  variant,
+  size,
+  tx,
+  text,
+  txOptions,
+  textStyle,
+  children,
+  RightAccessory,
+  LeftAccessory,
+  disabled,
+  ...props
+}: ButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ disabled: !!disabled }}
-      {...rest}
       disabled={disabled}
+      {...props}
     >
-      {(state) => (
-        <View className={getViewClasses(state)}>
-          {!!LeftAccessory && (
-            <LeftAccessory
-              style={{ marginEnd: 4, zIndex: 1 }}
-              pressableState={state}
-              disabled={disabled}
-            />
-          )}
+      {(state) => {
+        const isPressed = state.pressed;
 
-          {iconButton ? (
-            children
-          ) : (
-            <Text
-              tx={tx}
-              text={text}
-              txOptions={txOptions}
-              className={getTextClasses(state)}
-              style={$textStyleOverride}
-            >
-              {children}
-            </Text>
-          )}
+        const getPressedBackgroundColor = () => {
+          if (!isPressed || disabled) return '';
 
-          {!!RightAccessory && (
-            <RightAccessory
-              style={{ marginStart: 4, zIndex: 1 }}
-              pressableState={state}
-              disabled={disabled}
-            />
-          )}
-        </View>
-      )}
+          switch (variant) {
+            case 'primary':
+              return 'opacity-80';
+            case 'secondary':
+              return 'opacity-80';
+            case 'destructive':
+              return 'opacity-80';
+            case 'outline':
+              return 'bg-blue-neutral-100 bg-opacity-30';
+            case 'ghost':
+              return 'bg-gray-200 bg-opacity-20';
+            case 'icon':
+              return 'opacity-80';
+            default:
+              return '';
+          }
+        };
+
+        return (
+          <View
+            className={cn(
+              buttonVariants({ variant, size }),
+              disabled && 'opacity-50',
+              isPressed && !disabled && 'opacity-80',
+              isPressed && !disabled && getPressedBackgroundColor(),
+              className,
+            )}
+          >
+            {!!LeftAccessory && (
+              <LeftAccessory
+                style={{ marginEnd: 8 }}
+                pressableState={state}
+                disabled={disabled}
+              />
+            )}
+
+            {variant === 'icon' ? (
+              children
+            ) : (
+              <Text
+                tx={tx}
+                text={text}
+                txOptions={txOptions}
+                className={cn(
+                  textVariants({ variant, size }),
+                  disabled && 'opacity-50',
+                  textClassName,
+                )}
+                style={textStyle}
+              >
+                {children}
+              </Text>
+            )}
+
+            {!!RightAccessory && (
+              <RightAccessory
+                style={{ marginStart: 8 }}
+                pressableState={state}
+                disabled={disabled}
+              />
+            )}
+          </View>
+        );
+      }}
     </Pressable>
   );
 }

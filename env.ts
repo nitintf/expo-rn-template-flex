@@ -6,27 +6,31 @@ import { z } from 'zod';
 import packageJSON from './package.json';
 
 const APP_ENV = process.env.APP_ENV ?? 'development';
-const envPath = path.resolve(__dirname, `.env.${APP_ENV}`);
+const envPath = path.resolve(__dirname, '.env');
 
 config({ path: envPath });
 
-const BUNDLE_ID = 'com.changethis.expo';
-const PACKAGE = 'com.changethis.expo';
-const NAME = 'expo-temp';
-const SCHEME = 'expo-temp';
-
-const { EAS_PROJECT_ID, EXPO_PUBLIC_API_URL } = process.env;
+const {
+  EAS_PROJECT_ID,
+  EXPO_PUBLIC_API_URL,
+  BUNDLE_ID,
+  PACKAGE,
+  NAME,
+  SCHEME,
+} = process.env;
 
 const clientSchema = z.object({
   APP_ENV: z.enum(['development', 'staging', 'production']),
   NAME: z.string(),
-  PACKAGE: z.string(),
   VERSION: z.string(),
   API_URL: z.string().url('API_URL must be a valid URL'),
 });
 
 const buildTimeSchema = z.object({
   EAS_PROJECT_ID: z.string(),
+  PACKAGE: z.string(),
+  BUNDLE_ID: z.string(),
+  SCHEME: z.string(),
 });
 
 const clientEnv = {
@@ -38,6 +42,9 @@ const clientEnv = {
 
 const buildTimeEnv = {
   EAS_PROJECT_ID,
+  PACKAGE,
+  BUNDLE_ID,
+  SCHEME,
 };
 
 const validateEnv = () => {
@@ -45,24 +52,22 @@ const validateEnv = () => {
   const env = {
     ...clientEnv,
     ...buildTimeEnv,
-    EAS_PROJECT_ID,
-    BUNDLE_ID,
-    PACKAGE,
-    NAME,
-    SCHEME,
   };
   const parsed = mergedSchema.safeParse(env);
 
   if (!parsed.success) {
+    const errorDetails = parsed.error.flatten();
     console.error(
       '❌ Invalid environment variables:',
-      parsed.error.flatten().fieldErrors,
-      `\n❌ Missing variables in .env.${APP_ENV} file. Ensure all required variables are defined.`,
-      `\n💡 Tip: If you recently updated the .env.${APP_ENV} file and the error persists, try restarting the server with the -c flag to clear the cache.`,
+      errorDetails.fieldErrors,
+      '\n❌ Missing variables in .env file. Ensure all required variables are defined.',
+      '\n💡 Tip: If you recently updated the .env file and the error persists, try restarting the server with the -c flag to clear the cache.',
     );
-    throw new Error(
+    const error = new Error(
       'Invalid environment variables. Check terminal for more details.',
     );
+    error.name = 'EnvironmentValidationError';
+    throw error;
   }
 
   return parsed.data;

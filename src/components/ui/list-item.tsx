@@ -1,14 +1,12 @@
+import { Feather } from '@expo/vector-icons';
 import { forwardRef } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { cn } from '@/utils/cn';
 
-import { Icon } from '../common/icon';
-
 import { Text } from './text';
 
 import type { TextProps } from './text';
-import type { IconTypes } from '../common/icon';
 import type { ReactElement } from 'react';
 import type {
   StyleProp,
@@ -67,31 +65,37 @@ export interface ListItemProps extends TouchableOpacityProps {
    */
   style?: StyleProp<ViewStyle>;
   /**
-   * Icon that should appear on the left.
-   */
-  leftIcon?: IconTypes;
-  /**
-   * An optional tint color for the left icon
-   */
-  leftIconColor?: string;
-  /**
-   * Icon that should appear on the right.
-   */
-  rightIcon?: IconTypes;
-  /**
-   * An optional tint color for the right icon
-   */
-  rightIconColor?: string;
-  /**
    * Right action custom ReactElement.
-   * Overrides `rightIcon`.
    */
   RightComponent?: ReactElement;
   /**
    * Left action custom ReactElement.
-   * Overrides `leftIcon`.
    */
   LeftComponent?: ReactElement;
+  /**
+   * Left icon name (from Expo Feather icons)
+   */
+  leftIcon?: keyof typeof Feather.glyphMap;
+  /**
+   * Left icon color
+   */
+  leftIconColor?: string;
+  /**
+   * Left icon press handler
+   */
+  onLeftPress?: () => void;
+  /**
+   * Right icon name (from Expo Feather icons)
+   */
+  rightIcon?: keyof typeof Feather.glyphMap;
+  /**
+   * Right icon color
+   */
+  rightIconColor?: string;
+  /**
+   * Right icon press handler
+   */
+  onRightPress?: () => void;
   /**
    * Additional Tailwind classes for the container
    */
@@ -107,11 +111,14 @@ export interface ListItemProps extends TouchableOpacityProps {
 }
 
 interface ListItemActionProps {
-  icon?: IconTypes;
+  icon?: keyof typeof Feather.glyphMap;
   iconColor?: string;
+  onPress?: TouchableOpacityProps['onPress'];
   Component?: ReactElement;
   size: number;
   side: 'left' | 'right';
+  style?: StyleProp<ViewStyle>;
+  className?: string;
 }
 
 /**
@@ -127,11 +134,13 @@ export const ListItem = forwardRef<View, ListItemProps>(
       children,
       height = 56,
       LeftComponent,
+      RightComponent,
       leftIcon,
       leftIconColor,
-      RightComponent,
+      onLeftPress,
       rightIcon,
       rightIconColor,
+      onRightPress,
       style,
       text,
       TextProps,
@@ -177,6 +186,7 @@ export const ListItem = forwardRef<View, ListItemProps>(
             size={height}
             icon={leftIcon}
             iconColor={leftIconColor}
+            onPress={onLeftPress}
             Component={LeftComponent}
           />
 
@@ -196,6 +206,7 @@ export const ListItem = forwardRef<View, ListItemProps>(
             size={height}
             icon={rightIcon}
             iconColor={rightIconColor}
+            onPress={onRightPress}
             Component={RightComponent}
           />
         </TouchableOpacity>
@@ -209,25 +220,41 @@ export const ListItem = forwardRef<View, ListItemProps>(
  * @returns {JSX.Element | null} The rendered `ListItemAction` component.
  */
 function ListItemAction(props: ListItemActionProps) {
-  const { icon, Component, iconColor, size, side } = props;
+  const {
+    icon,
+    iconColor,
+    onPress,
+    Component,
+    size,
+    side,
+    style,
+    className = '',
+  } = props;
 
   const iconContainerClasses = cn(
     'justify-center items-center flex-grow-0',
     side === 'left' && 'mr-4',
     side === 'right' && 'ml-4',
+    className,
   );
 
-  if (Component) return Component;
-
-  if (icon !== undefined) {
+  if (Component) {
     return (
-      <Icon
-        size={24}
-        icon={icon}
-        color={iconColor}
-        containerStyle={[{ height: size }]}
+      <View className={iconContainerClasses} style={[{ height: size }, style]}>
+        {Component}
+      </View>
+    );
+  }
+
+  if (icon) {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
         className={iconContainerClasses}
-      />
+        style={[{ height: size }, style]}
+      >
+        <Feather name={icon} color={iconColor} size={24} />
+      </TouchableOpacity>
     );
   }
 

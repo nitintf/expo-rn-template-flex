@@ -1,14 +1,18 @@
 import { useScrollToTop } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  useColorScheme,
+  View,
+} from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { useSafeAreaInsetsStyle } from '@/hooks/use-safe-area-insets-style';
 import { cn } from '@/utils/cn';
 
 import type { ExtendedEdge } from '@/hooks/use-safe-area-insets-style';
-import type { StatusBarProps, StatusBarStyle } from 'expo-status-bar';
 import type { ReactNode } from 'react';
 import type {
   KeyboardAvoidingViewProps,
@@ -18,6 +22,10 @@ import type {
   StyleProp,
   ViewStyle,
 } from 'react-native';
+import type {
+  SystemBarsProps,
+  SystemBarStyle,
+} from 'react-native-edge-to-edge';
 
 export const DEFAULT_BOTTOM_OFFSET = 50;
 
@@ -43,9 +51,9 @@ interface BaseScreenProps {
    */
   backgroundColor?: string;
   /**
-   * Status bar setting. Defaults to dark.
+   * System bar setting. Defaults to dark.
    */
-  statusBarStyle?: StatusBarStyle;
+  systemBarStyle?: SystemBarStyle;
   /**
    * By how much should we offset the keyboard? Defaults to 0.
    */
@@ -55,9 +63,9 @@ interface BaseScreenProps {
    */
   keyboardBottomOffset?: number;
   /**
-   * Pass any additional props directly to the StatusBar component.
+   * Pass any additional props directly to the SystemBars component.
    */
-  StatusBarProps?: StatusBarProps;
+  SystemBarsProps?: SystemBarsProps;
   /**
    * Pass any additional props directly to the KeyboardAvoidingView component.
    */
@@ -75,7 +83,6 @@ interface BaseScreenProps {
 interface FixedScreenProps extends BaseScreenProps {
   preset?: 'fixed';
 }
-
 interface ScrollScreenProps extends BaseScreenProps {
   preset?: 'scroll';
   /**
@@ -231,7 +238,6 @@ function ScreenWithScrolling(props: ScreenProps) {
     ScrollViewProps,
     style,
     className = '',
-    contentClassName = '',
   } = props as ScrollScreenProps;
 
   const ref = useRef<ScrollView>(null);
@@ -240,6 +246,12 @@ function ScreenWithScrolling(props: ScreenProps) {
     props as AutoScreenProps,
   );
 
+  const defaultContentStyle = {
+    justifyContent: 'flex-start' as const,
+    alignItems: 'stretch' as const,
+    flexGrow: 1,
+  };
+
   // Add native behavior of pressing the active tab to scroll to the top of the content
   // More info at: https://reactnavigation.org/docs/use-scroll-to-top/
   useScrollToTop(ref);
@@ -247,7 +259,11 @@ function ScreenWithScrolling(props: ScreenProps) {
   return (
     <KeyboardAwareScrollView
       bottomOffset={keyboardBottomOffset}
-      {...{ keyboardShouldPersistTaps, scrollEnabled, ref }}
+      keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+      scrollEnabled={scrollEnabled}
+      ref={ref}
+      showsVerticalScrollIndicator
+      showsHorizontalScrollIndicator={false}
       {...ScrollViewProps}
       onLayout={(e) => {
         onLayout(e);
@@ -257,13 +273,13 @@ function ScreenWithScrolling(props: ScreenProps) {
         onContentSizeChange(w, h);
         ScrollViewProps?.onContentSizeChange?.(w, h);
       }}
-      className={cn('flex-1 h-full w-full', className)}
+      className={cn('flex-1', className)}
       style={[ScrollViewProps?.style, style]}
       contentContainerStyle={[
+        defaultContentStyle,
         ScrollViewProps?.contentContainerStyle,
         contentContainerStyle,
       ]}
-      contentContainerClassName={cn(contentClassName)}
     >
       {children}
     </KeyboardAwareScrollView>
@@ -280,23 +296,26 @@ function ScreenWithScrolling(props: ScreenProps) {
  */
 export function Screen(props: ScreenProps) {
   const {
-    backgroundColor,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
     safeAreaEdges,
-    StatusBarProps,
-    statusBarStyle,
+    SystemBarsProps,
+    systemBarStyle,
     className = '',
   } = props;
 
+  const colorScheme = useColorScheme();
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
 
   return (
     <View
-      className={cn('flex-1 h-full w-full', className)}
-      style={[{ backgroundColor }, $containerInsets]}
+      className={cn('flex-1 h-full w-full bg-background-default', className)}
+      style={$containerInsets}
     >
-      <StatusBar style={statusBarStyle || 'dark'} {...StatusBarProps} />
+      <SystemBars
+        style={systemBarStyle || (colorScheme === 'dark' ? 'light' : 'dark')}
+        {...SystemBarsProps}
+      />
 
       <KeyboardAvoidingView
         behavior={isIos ? 'padding' : 'height'}

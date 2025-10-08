@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { TouchableOpacity, View } from 'react-native';
 
 import { useSafeAreaInsetsStyle } from '@/hooks/use-safe-area-insets-style';
@@ -6,12 +7,9 @@ import { cn } from '@/utils/cn';
 
 import { Text } from '../ui/text';
 
-import { Icon } from './icon';
-
-import type { IconTypes } from './icon';
 import type { TextProps } from '../ui/text';
 import type { ExtendedEdge } from '@/hooks/use-safe-area-insets-style';
-import type { ComponentType, ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import type {
   StyleProp,
   TextStyle,
@@ -80,30 +78,6 @@ export interface HeaderProps {
    */
   TitleTextProps?: TextProps;
   /**
-   * Left icon
-   */
-  leftIcon?: IconTypes;
-  /**
-   * Left icon color
-   */
-  leftIconColor?: string;
-  /**
-   * Left icon press handler
-   */
-  onLeftPress?: () => void;
-  /**
-   * Right icon
-   */
-  rightIcon?: IconTypes;
-  /**
-   * Right icon color
-   */
-  rightIconColor?: string;
-  /**
-   * Right icon press handler
-   */
-  onRightPress?: () => void;
-  /**
    * Additional Tailwind classes for the container
    */
   containerClassName?: string;
@@ -115,12 +89,34 @@ export interface HeaderProps {
    * Additional Tailwind classes for the title
    */
   titleClassName?: string;
+  /**
+   * Left icon name (from Expo Feather icons)
+   */
+  leftIcon?: keyof typeof Feather.glyphMap;
+  /**
+   * Left icon color
+   */
+  leftIconColor?: string;
+  /**
+   * Left icon press handler
+   */
+  onLeftPress?: () => void;
+  /**
+   * Right icon name (from Expo Feather icons)
+   */
+  rightIcon?: keyof typeof Feather.glyphMap;
+  /**
+   * Right icon color
+   */
+  rightIconColor?: string;
+  /**
+   * Right icon press handler
+   */
+  onRightPress?: () => void;
 }
 
 interface HeaderActionProps {
-  backgroundColor?: string;
-  Icon?: ComponentType<unknown>;
-  icon?: IconTypes;
+  icon?: keyof typeof Feather.glyphMap;
   iconColor?: string;
   onPress?: TouchableOpacityProps['onPress'];
   Component?: ReactElement;
@@ -144,9 +140,9 @@ export function Header(props: HeaderProps) {
     leftIcon,
     leftIconColor,
     onLeftPress,
-    onRightPress,
     rightIcon,
     rightIconColor,
+    onRightPress,
     safeAreaEdges,
     style: $styleOverride,
     title,
@@ -178,10 +174,7 @@ export function Header(props: HeaderProps) {
     titleMode === 'center' ? 'items-center' : 'items-start',
   );
 
-  const titleClasses = cn(
-    'text-lg font-semibold text-gray-900',
-    titleClassName,
-  );
+  const titleClasses = cn('text-lg font-semibold text-white', titleClassName);
 
   return (
     <View
@@ -247,7 +240,7 @@ function HeaderAction(props: HeaderActionProps) {
         className={cn('p-2', className)}
         style={style}
       >
-        <Icon icon={icon} color={iconColor} size={24} />
+        <Feather name={icon} color={iconColor} size={24} />
       </TouchableOpacity>
     );
   }

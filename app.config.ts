@@ -30,7 +30,7 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
     },
     assetBundlePatterns: ['**/*'],
     splash: {
-      image: './assets/splash-icon.png',
+      image: './assets/images/app-icon-all.png',
       resizeMode: 'contain',
       backgroundColor: '#ffffff',
     },
